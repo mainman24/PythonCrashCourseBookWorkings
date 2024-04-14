@@ -2,6 +2,7 @@ import sys
 import pygame
 from bullet import Bullet
 from alien import Alien
+from time import sleep
 
 
 def change_fleet_direction(ai_settings, aliens):
@@ -17,9 +18,40 @@ def check_fleet_edges(ai_settings, aliens):
             break
 
 
-def update_aliens(ai_settings, aliens):
+def check_alien_bottom(ai_settings, screen, aliens, ship, stats, bullets):
+    screen_rect = screen.get_rect()
+    for alien in aliens.sprites():
+        if alien.rect.bottom >= screen_rect.bottom:
+            ship_hit(ai_settings, screen, aliens, ship, stats, bullets)
+            break
+
+
+def ship_hit(ai_settings, screen, aliens, ship, stats, bullets):
+
+    if stats.ship_left > 0:
+        stats.ship_left -= 1
+
+        aliens.empty()
+        bullets.empty()
+
+        create_fleet(ai_settings, screen, aliens, ship)
+
+        ship.center_ship()
+
+        sleep(0.5)
+
+    else:
+        stats.game_active = False
+
+
+def update_aliens(ai_settings, aliens, ship, screen, stats, bullets):
     check_fleet_edges(ai_settings, aliens)
     aliens.update()
+
+    if pygame.sprite.spritecollideany(ship, aliens):
+        ship_hit(ai_settings, screen, aliens, ship, stats, bullets)
+
+    check_alien_bottom(ai_settings, screen, aliens, ship, stats, bullets)
 
 
 def get_number_rows(ai_settings, ship_height, alien_height):
@@ -52,12 +84,19 @@ def create_fleet(ai_settings, screen, aliens, ship):
             create_alien(ai_settings, screen, aliens, alien_number, row_number)
 
 
-def update_bullets(bullets, aliens):
+def check_bullet_alien_collision(ai_settings, screen, aliens, ship, bullets):
+    collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+    if len(aliens) == 0:
+        bullets.empty()
+        create_fleet(ai_settings, screen, aliens, ship)
+
+
+def update_bullets(ai_settings, screen, ship, bullets, aliens):
     bullets.update()
     for bullet in bullets.copy():
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
-    collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+    check_bullet_alien_collision(ai_settings, screen, aliens, ship, bullets)
 
 
 def fire_bullets(ai_settings, screen, ship, bullets):
