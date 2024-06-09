@@ -1,0 +1,8 @@
+<p>
+<!-- url 'namespace:viewname' -->
+ <!-- or url 'appname:urlname' -->
+ <a href="{% url 'learningg_logs:index' %}">Learning Log</a> -
+ <a href="{% url 'learningg_logs:topics'%}">Topics</a>
+</p>
+ <!-- This creates a block named content in which child template can issue data -->
+ {% block content %}{% endblock content %}
