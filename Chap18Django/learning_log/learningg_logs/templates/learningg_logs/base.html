@@ -2,7 +2,21 @@
 <!-- url 'namespace:viewname' -->
  <!-- or url 'appname:urlname' -->
  <a href="{% url 'learningg_logs:index' %}">Learning Log</a> -
- <a href="{% url 'learningg_logs:topics'%}">Topics</a>
+ <a href="{% url 'learningg_logs:topics'%}">Topics</a> -
+ {% if user.is_authenticated %}
+ Hello {{user.username}}
+ {% else %}
+ <a href="{% url 'users:register' %}">Register</a> -
+ <a href="{% url 'users:login'%}">Log in</a>
+ {% endif %}
 </p>
  <!-- This creates a block named content in which child template can issue data -->
  {% block content %}{% endblock content %}
+
+{% if user.is_authenticated %}
+<hr /> <!--ensures log out is at the bottom-->
+<form action="{% url 'users:logout'%}" method='POST'>
+{% csrf_token %}
+<button name='submit'>Log out</button>
+</form>
+{% endif %}

@@ -1,0 +1,10 @@
+{% extends 'learningg_logs/base.html' %}
+{% block content%}
+<p>Enter a new topic:</p>
+<!-- action asks where to send form info to, we are sending to newtopic with post method and the form as paragraph tags-->
+<form action="{% url 'learningg_logs:new_topic' %}" method='post'>
+	{% csrf_token %}
+	{{ form.as_p }} 
+	<button name="submit">Add topic</button>
+</form>
+{% endblock %}
