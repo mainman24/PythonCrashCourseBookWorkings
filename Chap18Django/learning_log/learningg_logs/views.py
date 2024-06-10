@@ -54,6 +54,7 @@ def new_entry(request, topic_id):
             new_entry = form.save(commit=False)  # storing a form in new_entry
             new_entry.topic = topic
             new_entry.save()
+            return redirect('learningg_logs:topic', topic_id=topic.id)
     context = {'form': form, 'topic': topic}
     return render(request, 'learningg_logs/new_entry.html', context)
 
